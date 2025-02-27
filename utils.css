@@ -1,0 +1,1125 @@
+/* Security Dashboard Styles */
+/* Security Dashboard - Full Width */
+#security-dashboard {
+    grid-column: 1 / -1; /* Make it span all columns */
+    margin-bottom: 25px; /* Add some space below */
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    gap: 15px;
+    height: 100%;
+}
+
+.dashboard-card {
+    background-color: var(--dark-bg-lighter);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    min-height: 180px; /* Ensure minimum height */
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 6px;
+}
+
+/* System Health Card */
+.system-health .metric-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.metric-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(var(--success-color) 0% var(--percent, 100%), var(--dark-bg) var(--percent, 100%) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.metric-circle::before {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--dark-bg-lighter);
+}
+
+.metric-value {
+    position: relative;
+    z-index: 2;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.metric-label {
+    position: relative;
+    z-index: 2;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.health-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.health-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-weight: bold;
+}
+
+/* Threat Timeline Card */
+.threat-timeline {
+    position: relative;
+}
+
+#active-threats-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.threat-item {
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.threat-info {
+    flex: 1;
+}
+
+.threat-name {
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.threat-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.threat-progress {
+    width: 80px;
+    height: 8px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.threat-progress-fill {
+    height: 100%;
+    background-color: var(--danger-color);
+    transition: width 0.3s ease;
+}
+
+.no-threats-message, .no-actions-message {
+    padding: 15px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+}
+
+/* Score Display Card */
+.score-display {
+    text-align: center;
+}
+
+.score-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    gap: 15px;
+}
+
+.current-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.score-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.level-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.level-indicator {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: var(--dark-bg);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: var(--progress, 0%);
+    transition: width 0.5s ease;
+}
+
+.progress-label {
+    font-size: 0.8rem;
+    text-align: right;
+    color: var(--text-muted);
+}
+
+/* Recent Actions Card */
+.recent-actions {
+    position: relative;
+}
+
+#recent-actions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.action-item {
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+}
+
+.action-details {
+    flex: 1;
+}
+
+.action-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.action-target {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.action-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, auto);
+    }
+    
+    .dashboard-card {
+        min-height: 150px; /* Slightly smaller on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    #dashboard {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    #security-dashboard {
+        margin-bottom: 15px;
+    }
+    
+    .dashboard-card {
+        min-height: 130px; /* Even smaller on phones */
+    }
+    
+    .system-health .metric-container {
+        flex-direction: column;
+    }
+    
+    .metric-circle {
+        margin-bottom: 10px;
+    }
+}/* Threat Brief Styles */
+.brief-item {
+    padding: 10px 12px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid var(--info-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.brief-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.brief-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.brief-item:hover::after {
+    transform: translateX(0);
+}
+
+/* Brief severity indicators */
+.brief-item.severity-critical {
+    border-left-color: #ff4444;
+}
+
+.brief-item.severity-high {
+    border-left-color: #ff8800;
+}
+
+.brief-item.severity-medium {
+    border-left-color: #ffcc00;
+}
+
+.brief-item.severity-low {
+    border-left-color: #00aaff;
+}
+
+.brief-item.severity-info {
+    border-left-color: #00cc88;
+}
+
+/* Enhanced Threat Brief Modal */
+.threat-brief-modal {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.brief-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.brief-title-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.brief-title-area h2 {
+    margin: 5px 0;
+    font-size: 1.5rem;
+}
+
+.brief-category {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+.brief-severity {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.brief-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.brief-close-btn:hover {
+    color: var(--text-light);
+}
+
+.brief-message {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+}
+
+.brief-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.details-item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 15px;
+    align-items: start;
+}
+
+.details-label {
+    font-weight: bold;
+    color: var(--text-muted);
+}
+
+.tactics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tactic-badge {
+    background-color: var(--primary-dark);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.indicators-list, .mitigation-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.indicators-list li, .mitigation-list li {
+    margin-bottom: 5px;
+}
+
+.reference {
+    font-family: monospace;
+    padding: 3px 6px;
+    background-color: var(--dark-bg);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.brief-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--card-border);
+}
+
+.brief-action-btn {
+    padding: 8px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.close-btn {
+    background-color: var(--dark-bg-lighter);
+    color: var(--text-light);
+}
+
+.more-info-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.brief-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Severity colors */
+.severity-critical {
+    background-color: #991111;
+    color: white;
+}
+
+.severity-high {
+    background-color: #cc5500;
+    color: white;
+}
+
+.severity-medium {
+    background-color: #cc9900;
+    color: black;
+}
+
+.severity-low {
+    background-color: #0088cc;
+    color: white;
+}
+
+.severity-info {
+    background-color: #00aa77;
+    color: white;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive design for briefs */
+@media (max-width: 600px) {
+    .details-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .details-label {
+        margin-bottom: -5px;
+    }
+    
+    .brief-actions {
+        flex-direction: column;
+    }
+}/* Simulation Modal Styles */
+.simulation-modal-wrapper {
+    animation: fadeIn 0.3s ease;
+}
+
+.simulation-modal {
+    animation: slideIn 0.4s ease;
+}
+
+.step-indicator {
+    position: relative;
+}
+
+.step-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.step-indicator[data-active="true"]::after {
+    width: 100%;
+}
+
+.step-content {
+    animation: fadeIn 0.3s ease;
+}
+
+.nav-button {
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Detail boxes in simulation */
+.detail-box {
+    border-left: 3px solid var(--primary-color);
+    transition: all 0.2s ease;
+}
+
+.detail-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.technical-details {
+    border-left: 3px solid var(--warning-color);
+}
+
+/* Make simulation responsive */
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .step-indicator {
+        font-size: 0.8rem;
+    }
+}/* Action Console Improvements */
+.action-group {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 8px;
+}
+
+.action-group h3 {
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 4px;
+}
+
+.action-group button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+#actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.action-group {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.action-button {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Network Actions */
+#block-ip-btn, #rate-limit-btn, #blacklist-domain-btn {
+    background-color: #3a6baf;
+}
+
+#block-ip-btn:hover, #rate-limit-btn:hover, #blacklist-domain-btn:hover {
+    background-color: #2c5295;
+}
+
+/* System Actions */
+#reboot-server-btn, #terminate-process-btn, #restore-backup-btn {
+    background-color: #6f42c1;
+}
+
+#reboot-server-btn:hover, #terminate-process-btn:hover, #restore-backup-btn:hover {
+    background-color: #5b35a1;
+}
+
+/* Security Actions */
+#reset-password-btn, #revoke-access-btn, #patch-vulnerability-btn {
+    background-color: #28a745;
+}
+
+#reset-password-btn:hover, #revoke-access-btn:hover, #patch-vulnerability-btn:hover {
+    background-color: #218838;
+}
+
+/* Manual actions */
+#manual-actions button {
+    background-color: #6c757d;
+}
+
+#manual-actions button:hover {
+    background-color: #5a6268;
+}/* Debug panel styles */
+#debug-panel {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#debug-panel button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    margin-right: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#debug-panel button:hover {
+    background-color: #777;
+}
+
+#debug-output {
+    white-space: pre-wrap;
+    font-size: 11px;
+}
+
+/* Rule disabled style */
+.rule-disabled {
+    opacity: 0.5;
+}/* Rule library styles - Positioned at the bottom */
+#rule-library {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* Ensure proper grid order */
+#dashboard {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Main content and sidebar */
+    grid-auto-rows: auto; /* Let rows size automatically */
+    gap: 25px;
+    width: 95%;
+    max-width: 2500px;
+    padding: 25px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.rule-item {
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.rule-info {
+    flex-grow: 1;
+}
+
+.rule-name {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.rule-condition {
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+
+.rule-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.rule-actions button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    border-radius: 3px;
+}
+
+.rule-actions button:hover {
+    background-color: var(--card-bg);
+    color: var(--text-light);
+}
+
+.no-rules-message {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}/* utils.css - Additional utility styles */
+
+/* CSS Variables */
+:root {
+    --primary-color: #007bff;
+    --primary-dark: #0056b3;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    --dark-bg: #1a1f2e;
+    --dark-bg-lighter: #2d3345;
+    --card-bg: #3a4060;
+    --card-border: #4a5270;
+    
+    --text-light: #e0e6ed;
+    --text-muted: #b0b7c3;
+    
+    --header-height: 70px;
+    --footer-height: 60px;
+    --card-border-radius: 10px;
+}
+
+/* Accessibility improvements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.keyboard-focus:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Alert severity styles */
+.high-severity {
+    border-left: 4px solid var(--danger-color) !important;
+}
+
+.medium-severity {
+    border-left: 4px solid var(--warning-color) !important;
+}
+
+.low-severity {
+    border-left: 4px solid var(--info-color) !important;
+}
+
+/* Make alerts look clickable */
+#alert-list li {
+    cursor: pointer;
+    position: relative;
+    padding-right: 25px;
+    transition: background-color 0.2s;
+}
+
+#alert-list li:hover {
+    background-color: var(--dark-bg-lighter);
+}
+
+#alert-list li:after {
+    content: '🔍';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#alert-list li:hover:after {
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Progress bar styles */
+.progress-container {
+    margin: 15px 0;
+}
+
+.progress-label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: var(--dark-bg);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-value {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+/* Debrief screen styles */
+.debrief-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Badge styles */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.badge-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-warning {
+    background-color: var(--warning-color);
+    color: black;
+}
+
+.badge-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.badge-info {
+    background-color: var(--info-color);
+    color: white;
+}
+
+/* Notification animation */
+.notification {
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* Status indicator */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-online {
+    background-color: var(--success-color);
+}
+
+.status-warning {
+    background-color: var(--warning-color);
+}
+
+.status-critical {
+    background-color: var(--danger-color);
+}
+
+.status-offline {
+    background-color: var(--secondary-color);
+}
+
+/* Form improvements */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--card-bg);
+    padding: 0 5px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 5px;
+    background-color: var(--dark-bg-lighter);
+    color: var(--text-light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .debrief-actions {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+    .hide-on-tablet {
+        display: none;
+    }
+}
+
+@media (min-width: 1200px) {
+    .wide-layout {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 20px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .no-print {
+        display: none;
+    }
+}
