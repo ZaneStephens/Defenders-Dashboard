@@ -6,24 +6,23 @@ A cybersecurity training game that simulates threat detection, incident response
 
 ## Table of Contents
 
-Overview
-Features
-Game Mechanics
-Technical Architecture
-  Core Components
-  Event Flow
-  Module Structure
-How to Play
-Customization
-  Adding Custom Threats
-  Adding Custom Simulations
-Future Improvements
-Development
-  Setup
-  Structure
-  Event Bus Architecture
-Credits
-
+- [Overview](#overview)
+- [Features](#features)
+- [Game Mechanics](#game-mechanics)
+- [Technical Architecture](#technical-architecture)
+  - [Core Components](#core-components)
+  - [Event Flow](#event-flow)
+  - [Module Structure](#module-structure)
+- [How to Play](#how-to-play)
+- [Customization](#customization)
+  - [Adding Custom Threats](#adding-custom-threats)
+  - [Adding Custom Simulations](#adding-custom-simulations)
+- [Future Improvements](#future-improvements)
+- [Development](#development)
+  - [Setup](#setup)
+  - [Structure](#structure)
+  - [Event Bus Architecture](#event-bus-architecture)
+- [Credits](#credits)
 
 ## Overview
 
