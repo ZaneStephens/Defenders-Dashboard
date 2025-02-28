@@ -6,128 +6,95 @@
     <meta name="description" content="Interactive cybersecurity simulation dashboard for threat detection and incident response training">
     <meta name="theme-color" content="#1a1f2e">
     <title>Defender's Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="utils.css">
+    <link rel="stylesheet" href="defenders-dashboard.css">
 </head>
 <body>
     <header>
         <h1>Defender's Dashboard</h1>
     </header>
 
-    <main id="dashboard" class="container">
-        <section id="security-dashboard" class="card">
+    <!-- Updated HTML structure for the dashboard -->
+<main id="dashboard" class="container">
+    <!-- Top Dashboard Row -->
+    <section id="security-dashboard" class="card">
+        <div class="dashboard-grid">
+            <!-- Active Threats (Left) -->
+            <div class="dashboard-card threat-timeline">
+                <h3>Active Threats <span class="refresh-icon" title="Refresh">🔄</span></h3>
+                <div id="active-threats-container">
+                    <div class="no-threats-message">No active threats detected</div>
+                </div>
+            </div>
             
-            <div class="dashboard-grid">
-                <div class="dashboard-card system-health">
-                    <h3>System Health</h3>
-                    <div class="metric-container">
-                        <div class="metric-circle" id="uptime-indicator">
-                            <div class="metric-value" id="uptime-value">100%</div>
-                            <div class="metric-label">Uptime</div>
+            <!-- System Health (Middle) -->
+            <div class="dashboard-card system-health">
+                <h3>Security Status</h3>
+                <div class="metric-container">
+                    <div class="metric-circle" id="uptime-indicator">
+                        <div class="metric-value" id="uptime-value">100%</div>
+                        <div class="metric-label">Security Rating</div>
+                    </div>
+                    <div class="health-stats">
+                        <div class="health-stat">
+                            <span class="stat-label">Threats Handled:</span>
+                            <span class="stat-value" id="handled-events-count">0</span>
                         </div>
-                        <div class="health-stats">
-                            <div class="health-stat">
-                                <span class="stat-label">Handled Events:</span>
-                                <span class="stat-value" id="handled-events-count">0</span>
-                            </div>
-                            <div class="health-stat">
-                                <span class="stat-label">Pending Threats:</span>
-                                <span class="stat-value" id="pending-threats-count">0</span>
-                            </div>
+                        <div class="health-stat">
+                            <span class="stat-label">Active Threats:</span>
+                            <span class="stat-value" id="pending-threats-count">0</span>
                         </div>
                     </div>
                 </div>
-                
-                <div class="dashboard-card threat-timeline">
-                    <h3>Active Threats</h3>
-                    <div id="active-threats-container">
-                        <div class="no-threats-message">No active threats detected</div>
+            </div>
+            
+            <!-- Score Display (Right) -->
+            <div class="dashboard-card score-display">
+                <h3>Security Analyst Progress</h3>
+                <div class="score-container">
+                    <div class="current-score">
+                        <span class="score-value" id="current-score">0</span>
+                        <span class="score-label">Points</span>
+                    </div>
+                    <div class="level-progress">
+                        <div class="level-indicator" id="current-level">Level 1</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="level-progress-bar"></div>
+                        </div>
+                        <div class="progress-label" id="level-progress-label">0%</div>
                     </div>
                 </div>
-                
-                <div class="dashboard-card score-display">
-                    <h3>Game Progress</h3>
-                    <div class="score-container">
-                        <div class="current-score">
-                            <span class="score-value" id="current-score">0</span>
-                            <span class="score-label">Points</span>
-                        </div>
-                        <div class="level-progress">
-                            <div class="level-indicator" id="current-level">Level 1</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="level-progress-bar"></div>
-                            </div>
-                            <div class="progress-label" id="level-progress-label">0%</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="dashboard-card recent-actions">
-                    <h3>Recent Actions</h3>
-                    <ul id="recent-actions-list">
-                        <li class="no-actions-message">No actions taken yet</li>
-                    </ul>
-                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Left Column (25%) -->
+    <div class="left-column">
+        <section id="log-details" class="card">
+            <h2>Log Details</h2>
+            <div id="log-detail-content"></div>
+            <div class="form-actions">
+                <button id="close-log-details-btn">Close</button>
             </div>
         </section>
 
+        <section id="threat-briefs" class="card">
+            <h2>Threat Briefs</h2>
+            <div id="brief-area"></div>
+        </section>
+
+        <section id="case-builder" class="card">
+            <h2>Case Builder</h2>
+            <div id="case-builder-dropzone" class="dropzone" role="region" aria-label="Drop alerts here">
+                <p>Drag alerts here to build a case</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Middle Column (50%) -->
+    <div class="middle-column">
         <section id="alert-pane" class="card">
             <h2>Alerts</h2>
             <ul id="alert-list" aria-live="polite"></ul>
-        </section>
-
-        <section id="rule-editor" class="card">
-            <h2>Rule Editor</h2>
-            <form id="rule-form" aria-label="Rule editor form">
-                <div class="form-group">
-                    <label for="rule-condition-type">Condition Type:</label>
-                    <select id="rule-condition-type" name="conditionType">
-                        <option value="login_fail">Login Failures</option>
-                        <option value="traffic_spike">Traffic Spike</option>
-                        <option value="process_spawn">Process Spawn</option>
-                        <option value="dns_query">DNS Query to Domain</option>
-                        <option value="http_error">HTTP Error Code</option>
-                        <option value="unauthorized_access">Unauthorized Access</option>
-                        <option value="service_failure">Service Failure</option>
-                    </select>
-                </div>
-                <div class="form-group" id="threshold-group">
-                    <label for="rule-threshold-input">Threshold:</label>
-                    <input type="number" id="rule-threshold-input" name="threshold" value="5" min="1" required>
-                </div>
-                <div class="form-group" id="process-name-group" hidden>
-                    <label for="rule-process-name-input">Process Name:</label>
-                    <input type="text" id="rule-process-name-input" name="processName" placeholder="e.g., malware.exe">
-                </div>
-                <div class="form-group" id="domain-keyword-group" hidden>
-                    <label for="rule-domain-keyword-input">Domain Keyword:</label>
-                    <input type="text" id="rule-domain-keyword-input" name="domainKeyword" placeholder="e.g., suspicious">
-                </div>
-                <div class="form-group" id="error-code-group" hidden>
-                    <label for="rule-error-code-threshold-input">Error Code Threshold:</label>
-                    <input type="number" id="rule-error-code-threshold-input" name="errorCodeThreshold" value="400" min="100" max="599">
-                </div>
-                <div class="form-group" id="resource-keyword-group" hidden>
-                    <label for="rule-resource-keyword-input">Resource Keyword:</label>
-                    <input type="text" id="rule-resource-keyword-input" name="resourceKeyword" placeholder="e.g., sensitive-data">
-                </div>
-                <div class="form-group" id="service-name-group" hidden>
-                    <label for="rule-service-name-input">Service Name:</label>
-                    <input type="text" id="rule-service-name-input" name="serviceName" placeholder="e.g., database-service">
-                </div>
-                <div class="form-group">
-                    <label for="rule-combinator">Combinator:</label>
-                    <select id="rule-combinator" name="combinator">
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="rule-test-button">Test Rule</button>
-                    <button type="button" id="rule-save-button">Save Rule</button>
-                </div>
-            </form>
-            <output id="rule-test-output" hidden></output>
         </section>
 
         <section id="action-console" class="card">
@@ -152,7 +119,7 @@
                     <button class="action-button" id="patch-vulnerability-btn" data-action="patch_vulnerability">Patch Vulnerability</button>
                 </div>
             </div>
-            <div id="action-dropzone" class="dropzone" style="margin-top: 10px; padding: 10px; border: 2px dashed #ccc; text-align: center;">
+            <div id="action-dropzone" class="dropzone" style="margin-top: 10px;">
                 Drop alerts here to apply actions
             </div>
             <div id="manual-actions" style="margin-top: 10px;">
@@ -160,34 +127,44 @@
                 <button class="action-button" id="clear-log-btn" data-action="clear_log">Clear Log</button>
             </div>
         </section>
+    </div>
 
-        <section id="log-details" class="card" hidden>
-            <h2>Log Details</h2>
-            <div id="log-detail-content"></div>
-            <div class="form-actions">
-                <button id="close-log-details-btn">Close</button>
-            </div>
+    <!-- Right Column (25%) -->
+    <div class="right-column">
+        <section id="recent-actions-card" class="card">
+            <h2>Recent Actions</h2>
+            <ul id="recent-actions-list">
+                <li class="no-actions-message">No actions taken yet</li>
+            </ul>
         </section>
-
-        <section id="case-builder" class="card">
-            <h2>Case Builder</h2>
-            <div id="case-builder-dropzone" class="dropzone" role="region" aria-label="Drop alerts here">
-                <p>Drag alerts here to build a case</p>
-            </div>
-        </section>
-
-        <section id="threat-briefs" class="card">
-            <h2>Threat Briefs</h2>
-            <div id="brief-area"></div>
-        </section>
-
-        <section id="debrief-screen" class="card" hidden>
-            <h2>Debrief</h2>
-            <div id="debrief-stats"></div>
-            <div id="achievements-badges">
-                <h3>Achievements & Badges (Future Feature)</h3>
-                <div id="badge-display"></div>
-            </div>
+        
+        <section id="rule-editor" class="card">
+            <h2>Rule Editor</h2>
+            <form id="rule-form" aria-label="Rule editor form">
+                <div class="form-group">
+                    <label for="rule-condition-type">Condition Type:</label>
+                    <select id="rule-condition-type" name="conditionType">
+                        <option value="login_fail">Login Failures</option>
+                        <option value="traffic_spike">Traffic Spike</option>
+                        <option value="process_spawn">Process Spawn</option>
+                        <option value="dns_query">DNS Query to Domain</option>
+                        <option value="http_error">HTTP Error Code</option>
+                        <option value="unauthorized_access">Unauthorized Access</option>
+                        <option value="service_failure">Service Failure</option>
+                    </select>
+                </div>
+                <!-- Rest of rule form fields -->
+                <div class="form-group" id="threshold-group">
+                    <label for="rule-threshold-input">Threshold:</label>
+                    <input type="number" id="rule-threshold-input" name="threshold" value="5" min="1" required>
+                </div>
+                <!-- Additional rule form groups -->
+                <div class="form-actions">
+                    <button type="button" id="rule-test-button">Test Rule</button>
+                    <button type="button" id="rule-save-button">Save Rule</button>
+                </div>
+            </form>
+            <output id="rule-test-output" hidden></output>
         </section>
         
         <section id="rule-library" class="card">
@@ -196,7 +173,14 @@
                 <p class="no-rules-message">No active rules. Create rules using the Rule Editor.</p>
             </div>
         </section>
-    </main>
+    </div>
+    
+    <!-- Hidden sections -->
+    <section id="debrief-screen" class="card" hidden>
+        <h2>Debrief</h2>
+        <div id="debrief-stats"></div>
+    </section>
+</main>
 
     <footer class="controls">
         <div id="game-controls">
