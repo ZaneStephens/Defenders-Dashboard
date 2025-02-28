@@ -333,6 +333,26 @@ const uiController = {
             
             if (currentValue !== targetValue) {
                 this.animateCounter(dashboard.currentScore, currentValue, targetValue, 1000);
+                
+                // Get the current level to update progress bar
+                const currentLevel = gameModel.getCurrentLevel();
+                if (currentLevel) {
+                    // Update level progress based on new score
+                    const progressPercent = Math.min(100, Math.round((targetValue / currentLevel.targetScore) * 100));
+                    
+                    // Update progress bar and label
+                    if (dashboard.levelProgressBar && dashboard.levelProgressLabel) {
+                        dashboard.levelProgressBar.style.setProperty('--progress', `${progressPercent}%`);
+                        dashboard.levelProgressLabel.textContent = `${progressPercent}%`;
+                    }
+                    
+                    // Check if player should advance to next level
+                    if (targetValue >= currentLevel.targetScore && 
+                        gameModel.state.level < gameModel.levels.length) {
+                        // Show notification about level completion
+                        this.showNotification('success', 'Level target reached! Advance to next level in debrief.');
+                    }
+                }
             }
         }
         
