@@ -1,0 +1,1445 @@
+/* ==========================================================================
+   Defender's Dashboard - Main CSS File
+   All styles consolidated for easier maintenance
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CSS Variables & Base Styles
+   ========================================================================== */
+
+   :root {
+    /* Color Palette */
+    --primary-color: #007bff;
+    --primary-dark: #0056b3;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    /* Theme Colors */
+    --dark-bg: #1a1f2e;
+    --dark-bg-lighter: #2d3345;
+    --card-bg: #3a4060;
+    --card-border: #4a5270;
+    
+    /* Text Colors */
+    --text-light: #e0e6ed;
+    --text-muted: #b0b7c3;
+    
+    /* Layout */
+    --header-height: 70px;
+    --footer-height: 60px;
+    --card-border-radius: 10px;
+    
+    /* Add version as CSS variable */
+    --app-version: "1.1.0";
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+}
+
+/* ==========================================================================
+   2. Layout & Container Styles
+   ========================================================================== */
+
+header {
+    background: #003087;
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Main Dashboard Grid Layout */
+#dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr; /* Three-column layout */
+    grid-template-areas: 
+        "security-dash security-dash security-dash"
+        "rule-editor alert-pane threat-briefs"
+        "action-console alert-pane rule-library"
+        "case-builder log-details log-details";
+    gap: 15px;
+    width: 95%;
+    max-width: 2500px;
+    padding: 20px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    height: calc(100vh - 150px); /* Fits better on screen */
+    min-height: 700px;
+}
+
+/* Assign grid areas to sections */
+#security-dashboard {
+    grid-area: security-dash;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+#alert-pane {
+    grid-area: alert-pane;
+    min-height: 180px;
+    max-height: none;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+#rule-editor {
+    grid-area: rule-editor;
+    max-height: 400px;
+    margin-bottom: 12px;
+    overflow-y: auto;
+}
+
+#action-console {
+    grid-area: action-console;
+    min-height: 300px;
+    overflow-y: auto;
+}
+
+#log-details {
+    grid-area: log-details;
+    min-height: 200px;
+    margin-bottom: 12px;
+}
+
+div#log-detail-content {
+    min-height: 80px;
+}
+
+#case-builder {
+    grid-area: case-builder;
+}
+
+#threat-briefs {
+    grid-area: threat-briefs;
+    min-height: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+#rule-library {
+    grid-area: rule-library;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Fixed position for debrief screen */
+#debrief-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Card styling */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    padding: 15px;
+    border: 1px solid var(--card-border);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+/* Controls footer */
+.controls {
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Push to bottom */
+}
+
+.controls button {
+    margin: 0 10px;
+    min-width: 150px;
+}
+
+/* ==========================================================================
+   3. Security Dashboard Components
+   ========================================================================== */
+
+/* Security Dashboard - Full Width */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    height: 100%;
+    max-height: 150px;
+}
+
+.dashboard-card {
+    background-color: var(--dark-bg-lighter);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+    max-height: fit-content;
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 6px;
+}
+
+/* System Health Card */
+.system-health .metric-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.metric-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(var(--success-color) 0% var(--percent, 100%), var(--dark-bg) var(--percent, 100%) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.metric-circle::before {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--dark-bg-lighter);
+}
+
+.metric-value {
+    position: relative;
+    z-index: 2;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.metric-label {
+    position: relative;
+    z-index: 2;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.health-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.health-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-weight: bold;
+}
+
+/* Threat level indicator */
+.threat-level-indicator {
+    margin-top: 8px;
+}
+
+.threat-level-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background-color: var(--success-color);
+    color: white;
+}
+
+.refresh-icon {
+    font-size: 0.8rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.refresh-icon:hover {
+    opacity: 1;
+}
+
+.recent-time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: normal;
+}
+
+/* Threat Timeline Card */
+.threat-timeline {
+    position: relative;
+}
+
+#active-threats-container {
+    flex: 1;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 100px;
+}
+
+.threat-item {
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.threat-info {
+    flex: 1;
+}
+
+.threat-name {
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.threat-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.threat-progress {
+    width: 80px;
+    height: 8px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.threat-progress-fill {
+    height: 100%;
+    background-color: var(--danger-color);
+    transition: width 0.3s ease;
+}
+
+.no-threats-message, .no-actions-message {
+    padding: 15px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+}
+
+/* Score Display Card */
+.score-display {
+    text-align: center;
+}
+
+.score-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    gap: 12px;
+    max-height: fit-content;
+}
+
+.current-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-value {
+    font-size: 2.4rem;
+    font-weight: bold;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.score-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.level-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.level-indicator {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: var(--dark-bg);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: var(--progress, 0%);
+    transition: width 0.5s ease;
+}
+
+.progress-label {
+    font-size: 0.8rem;
+    text-align: right;
+    color: var(--text-muted);
+}
+
+/* Recent Actions Card */
+.recent-actions {
+    position: relative;
+}
+
+#recent-actions-card {
+    min-height: 150px;
+    margin-bottom: 12px;
+    max-height: 250px;
+    overflow-y: hidden;
+}
+
+#recent-actions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow: hidden;
+    max-height: 120px;
+}
+
+/* Limit to show only 3 items */
+#recent-actions-list li:nth-child(n+4) {
+    display: none;
+}
+
+.action-item {
+    background-color: var(--dark-bg);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+}
+
+.action-details {
+    flex: 1;
+}
+
+.action-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.action-target {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.action-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   4. Alert & Events Styling
+   ========================================================================== */
+
+#alert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#alert-list li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--dark-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--info-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative;
+    padding-right: 25px;
+}
+
+#alert-list li:hover {
+    background-color: var(--dark-bg-lighter);
+}
+
+#alert-list li:after {
+    content: '🔍';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#alert-list li:hover:after {
+    opacity: 1;
+}
+
+/* Alert severity styles */
+.high-severity {
+    border-left: 4px solid var(--danger-color) !important;
+}
+
+.medium-severity {
+    border-left: 4px solid var(--warning-color) !important;
+}
+
+.low-severity {
+    border-left: 4px solid var(--info-color) !important;
+}
+
+#alert-list li.escalated {
+    border-left-color: var(--danger-color);
+}
+
+/* ==========================================================================
+   5. Form & Input Styles
+   ========================================================================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    background: var(--dark-bg);
+    color: var(--text-light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+/* Input Group with floating label */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--card-bg);
+    padding: 0 5px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 5px;
+    background-color: var(--dark-bg-lighter);
+    color: var(--text-light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* ==========================================================================
+   6. Button Styles
+   ========================================================================== */
+
+button,
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.1s;
+}
+
+button {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background: var(--secondary-color);
+    cursor: not-allowed;
+}
+
+.action-button {
+    background: var(--info-color);
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.action-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Action Console Button Colors */
+
+/* Network Actions */
+#block-ip-btn, #rate-limit-btn, #blacklist-domain-btn {
+    background-color: #3a6baf;
+}
+
+#block-ip-btn:hover, #rate-limit-btn:hover, #blacklist-domain-btn:hover {
+    background-color: #2c5295;
+}
+
+/* System Actions */
+#reboot-server-btn, #terminate-process-btn, #restore-backup-btn {
+    background-color: #6f42c1;
+}
+
+#reboot-server-btn:hover, #terminate-process-btn:hover, #restore-backup-btn:hover {
+    background-color: #5b35a1;
+}
+
+/* Security Actions */
+#reset-password-btn, #revoke-access-btn, #patch-vulnerability-btn {
+    background-color: #28a745;
+}
+
+#reset-password-btn:hover, #revoke-access-btn:hover, #patch-vulnerability-btn:hover {
+    background-color: #218838;
+}
+
+/* Manual actions */
+#manual-actions button {
+    background-color: #6c757d;
+}
+
+#manual-actions button:hover {
+    background-color: #5a6268;
+}
+
+/* Navigation buttons */
+.nav-button {
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   7. Threat Brief & Notification Styles
+   ========================================================================== */
+
+.brief-item {
+    padding: 10px 12px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid var(--info-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.brief-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.brief-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.brief-item:hover::after {
+    transform: translateX(0);
+}
+
+/* Brief severity indicators */
+.brief-item.severity-critical {
+    border-left-color: #ff4444;
+}
+
+.brief-item.severity-high {
+    border-left-color: #ff8800;
+}
+
+.brief-item.severity-medium {
+    border-left-color: #ffcc00;
+}
+
+.brief-item.severity-low {
+    border-left-color: #00aaff;
+}
+
+.brief-item.severity-info {
+    border-left-color: #00cc88;
+}
+
+/* Enhanced Threat Brief Modal */
+.threat-brief-modal {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.brief-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.brief-title-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.brief-title-area h2 {
+    margin: 5px 0;
+    font-size: 1.5rem;
+}
+
+.brief-category {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+.brief-severity {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.brief-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.brief-close-btn:hover {
+    color: var(--text-light);
+}
+
+.brief-message {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+}
+
+.brief-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.details-item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 15px;
+    align-items: start;
+}
+
+.details-label {
+    font-weight: bold;
+    color: var(--text-muted);
+}
+
+.tactics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tactic-badge {
+    background-color: var(--primary-dark);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.indicators-list, .mitigation-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.indicators-list li, .mitigation-list li {
+    margin-bottom: 5px;
+}
+
+.reference {
+    font-family: monospace;
+    padding: 3px 6px;
+    background-color: var(--dark-bg);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.brief-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--card-border);
+}
+
+.brief-action-btn {
+    padding: 8px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.close-btn {
+    background-color: var(--dark-bg-lighter);
+    color: var(--text-light);
+}
+
+.more-info-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.brief-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Severity colors */
+.severity-critical {
+    background-color: #991111;
+    color: white;
+}
+
+.severity-high {
+    background-color: #cc5500;
+    color: white;
+}
+
+.severity-medium {
+    background-color: #cc9900;
+    color: black;
+}
+
+.severity-low {
+    background-color: #0088cc;
+    color: white;
+}
+
+.severity-info {
+    background-color: #00aa77;
+    color: white;
+}
+
+/* Notification styles */
+.notification {
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+#notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* ==========================================================================
+   8. Simulation Modal & Popup Styles
+   ========================================================================== */
+
+.popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark-bg-lighter);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    max-width: 90%;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.popup h3 {
+    margin: 0 0 15px;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.popup p {
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.popup button {
+    padding: 8px 15px;
+    background: var(--primary-color);
+}
+
+.popup button:hover {
+    background: var(--primary-dark);
+}
+
+.simulation-modal-wrapper {
+    animation: fadeIn 0.3s ease;
+}
+
+.simulation-modal {
+    animation: slideIn 0.4s ease;
+}
+
+.step-indicator {
+    position: relative;
+}
+
+.step-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.step-indicator[data-active="true"]::after {
+    width: 100%;
+}
+
+.step-content {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Detail boxes in simulation */
+.detail-box {
+    border-left: 3px solid var(--primary-color);
+    transition: all 0.2s ease;
+}
+
+.detail-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.technical-details {
+    border-left: 3px solid var(--warning-color);
+}
+
+/* ==========================================================================
+   9. Action Console & Rule Management
+   ========================================================================== */
+
+/* Actions Console */
+.action-group {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: var(--dark-bg-lighter);
+    border-radius: 8px;
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.action-group h3 {
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 4px;
+}
+
+.action-group button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+#actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Dropzone styles */
+.dropzone {
+    min-height: 50px;
+    padding: 10px;
+    background: var(--dark-bg-lighter);
+    border: 2px dashed var(--card-border);
+    border-radius: 6px;
+    text-align: center;
+    color: var(--text-muted);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.dropzone.dragover {
+    background: var(--primary-dark);
+    border-color: var(--primary-color);
+}
+
+#action-dropzone {
+    margin-top: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Rule Library */
+#rule-library {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.rule-item {
+    background-color: var(--dark-bg-lighter);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.rule-info {
+    flex-grow: 1;
+}
+
+.rule-name {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.rule-condition {
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+
+.rule-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.rule-actions button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    border-radius: 3px;
+}
+
+.rule-actions button:hover {
+    background-color: var(--card-bg);
+    color: var(--text-light);
+}
+
+.no-rules-message {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+.rule-disabled {
+    opacity: 0.5;
+}
+
+#rule-test-output {
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--dark-bg);
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+}
+
+/* ==========================================================================
+   10. Utility Classes
+   ========================================================================== */
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.keyboard-focus:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-online {
+    background-color: var(--success-color);
+}
+
+.status-warning {
+    background-color: var(--warning-color);
+}
+
+.status-critical {
+    background-color: var(--danger-color);
+}
+
+.status-offline {
+    background-color: var(--secondary-color);
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.badge-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-warning {
+    background-color: var(--warning-color);
+    color: black;
+}
+
+.badge-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.badge-info {
+    background-color: var(--info-color);
+    color: white;
+}
+
+/* Progress containers */
+.progress-container {
+    margin: 15px 0;
+}
+
+/* ==========================================================================
+   11. Animations & Transitions
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   12. Responsive Design
+   ========================================================================== */
+
+/* Media queries for different screen sizes */
+@media (max-width: 1200px) {
+    #dashboard {
+        grid-template-columns: 33% 67%;
+        grid-template-areas: 
+            "dashboard-row dashboard-row"
+            "left-column middle-column"
+            "right-column right-column";
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    .dashboard-card {
+        min-height: 150px; /* Slightly smaller on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    #dashboard {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "dashboard-row"
+            "middle-column"
+            "left-column"
+            "right-column";
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-card {
+        min-height: 100px; /* Even smaller on phones */
+    }
+    
+    .system-health .metric-container {
+        flex-direction: column;
+    }
+    
+    .metric-circle {
+        margin-bottom: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card h2 {
+        font-size: 1.1rem;
+    }
+    
+    .brief-item {
+        padding: 8px;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .step-indicator {
+        font-size: 0.8rem;
+    }
+    
+    .details-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .details-label {
+        margin-bottom: -5px;
+    }
+    
+    .brief-actions {
+        flex-direction: column;
+    }
+    
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+    .hide-on-tablet {
+        display: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .no-print {
+        display: none;
+    }
+}
