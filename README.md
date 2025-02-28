@@ -118,22 +118,21 @@ The `eventBus.js` provides a central publish/subscribe system for inter-module c
 ### Module Structure
 
 ```
-- index.html            # Main application HTML
-- style.css             # Core styles
-- utils.css             # Utility styles and components
-- main.js               # Application entry point
-- eventBus.js           # Central event publish/subscribe system
-- gameModel.js          # Game state and data management
-- gameController.js     # Main game logic controller
-- eventGenerator.js     # Security event creation
-- threats.js            # Event type definitions and templates
-- ruleEngine.js         # Custom rule creation and evaluation
-- uiController.js       # DOM manipulation and UI updates
-- simulationController.js # Attack visualization controller
-- escalationsController.js # Threat escalation management
-- briefsController.js   # Threat intelligence updates
-- themeController.js    # UI theme customization
-- utils.js              # Common utility functions
+- index.html                # Main application HTML
+- defenders-dashboard.css   # Core styles
+- main.js                   # Application entry point
+- eventBus.js               # Central event publish/subscribe system
+- gameModel.js              # Game state and data management
+- gameController.js         # Main game logic controller
+- eventGenerator.js         # Security event creation
+- threats.js                # Event type definitions and templates
+- ruleEngine.js             # Custom rule creation and evaluation
+- uiController.js           # DOM manipulation and UI updates
+- simulationController.js   # Attack visualization controller
+- escalationsController.js  # Threat escalation management
+- briefsController.js       # Threat intelligence updates
+- themeController.js        # UI theme customization
+- utils.js                  # Common utility functions
 ```
 
 ## How to Play
