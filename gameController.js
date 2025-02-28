@@ -9,6 +9,7 @@ const gameController = {
     simulationInterval: null,
     escalationCheckInterval: null,
     debugMode: false, // Debug mode flag
+    failedAttempts: {}, // Track failed attempts for each event
     
     /**
      * Initialize the game controller
@@ -261,102 +262,182 @@ const gameController = {
      * Handle an event via player action
      * @param {object} data - Event data from the event bus
      */
-    handleEvent: function(data) {
-        const event = data.event;
-        const action = data.action;
-        
-        // Check if event and action are defined
-        if (!event || !action) {
-            eventBus.publish('notification:error', {
-                message: `Invalid event or action specified.`
-            });
-            return;
-        }
-        
-        // Format action for display (replace underscores with spaces)
-        const formattedAction = typeof action === 'string' ? action.replace(/_/g, ' ') : String(action);
-        
-        // Handle special manual actions
-        if (action === 'stop_timer') {
-            // Pause all timers/simulation
-            this.pauseSimulation();
-            eventBus.publish('notification:info', {
-                message: `Timers paused. Click Start Simulation to resume.`
-            });
-            return;
-        }
-        
-        if (action === 'clear_log') {
-            // Clear alerts from UI
-            const alertList = document.getElementById('alert-list');
-            if (alertList) {
-                alertList.innerHTML = '';
-                eventBus.publish('notification:success', {
-                    message: `Alert list cleared.`
-                });
-            }
-            return;
-        }
-        
-        // Special case for apply_rule - always succeeds
-        if (action === 'apply_rule') {
-            gameModel.markEventAsHandled(event);
+// Modify the handleEvent function in gameController.js
+handleEvent: function(data) {
+    const event = data.event;
+    const action = data.action;
+    
+    // Generate a unique ID for this event if not already present
+    if (!event._id) {
+        event._id = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+    }
+    
+    // Check if event and action are defined
+    if (!event || !action) {
+        eventBus.publish('notification:error', {
+            message: `Invalid event or action specified.`
+        });
+        return;
+    }
+    
+    // Format action for display (replace underscores with spaces)
+    const formattedAction = typeof action === 'string' ? action.replace(/_/g, ' ') : String(action);
+    
+    // Handle special manual actions
+    if (action === 'stop_timer') {
+        // Pause all timers/simulation
+        this.pauseSimulation();
+        eventBus.publish('notification:info', {
+            message: `Timers paused. Click Start Simulation to resume.`
+        });
+        return;
+    }
+    
+    if (action === 'clear_log') {
+        // Clear alerts from UI
+        const alertList = document.getElementById('alert-list');
+        if (alertList) {
+            alertList.innerHTML = '';
             eventBus.publish('notification:success', {
-                message: `Rule applied successfully to ${event.type} event.`
+                message: `Alert list cleared.`
             });
-            return;
+        }
+        return;
+    }
+    
+    // Special case for apply_rule - always succeeds
+    if (action === 'apply_rule') {
+        gameModel.markEventAsHandled(event);
+        eventBus.publish('notification:success', {
+            message: `Rule applied successfully to ${event.type} event.`
+        });
+        
+        // Clear from action dropzone
+        this.clearFromActionDropzone(event);
+        return;
+    }
+    
+    // If action doesn't match the remediation for this event
+    let isEffective = false;
+    
+    // Check if this is a valid remediation for this event
+    if (event.remediation) {
+        const possibleRemediation = event.remediation.split(', ');
+        isEffective = possibleRemediation.includes(action);
+    } 
+    
+    // Alternative remediations - if the exact action isn't listed but general type is
+    if (!isEffective) {
+        // For any network/connection issues, block_ip is generally effective
+        if (action === 'block_ip' && 
+            (event.type === 'dns_query' || event.type === 'http_error' || 
+             event.type === 'traffic_spike' || event.type === 'sql_injection')) {
+            isEffective = true;
         }
         
-        // If action doesn't match the remediation for this event
-        let isEffective = false;
-        
-        // Check if this is a valid remediation for this event
-        if (event.remediation) {
-            const possibleRemediation = event.remediation.split(', ');
-            isEffective = possibleRemediation.includes(action);
-        } 
-        
-        // Alternative remediations - if the exact action isn't listed but general type is
-        if (!isEffective) {
-            // For any network/connection issues, block_ip is generally effective
-            if (action === 'block_ip' && 
-                (event.type === 'dns_query' || event.type === 'http_error' || 
-                 event.type === 'traffic_spike' || event.type === 'sql_injection')) {
-                isEffective = true;
-            }
-            
-            // For any service issues, rebooting often helps
-            if (action === 'reboot_server' && 
-                (event.type === 'service_failure' || event.type === 'process_spawn')) {
-                isEffective = true;
-            }
-            
-            // For auth issues, password reset helps
-            if (action === 'reset_password' && 
-                (event.type === 'login_fail' || event.type === 'unauthorized_access')) {
-                isEffective = true;
-            }
+        // For any service issues, rebooting often helps
+        if (action === 'reboot_server' && 
+            (event.type === 'service_failure' || event.type === 'process_spawn')) {
+            isEffective = true;
         }
         
-        if (isEffective) {
-            // Mark event as handled
-            const success = gameModel.markEventAsHandled(event);
+        // For auth issues, password reset helps
+        if (action === 'reset_password' && 
+            (event.type === 'login_fail' || event.type === 'unauthorized_access')) {
+            isEffective = true;
+        }
+    }
+    
+    if (isEffective) {
+        // Mark event as handled
+        const success = gameModel.markEventAsHandled(event);
+        
+        if (success) {
+            eventBus.publish('notification:success', {
+                message: `${formattedAction} succeeded for ${event.type}.`
+            });
             
-            if (success) {
-                eventBus.publish('notification:success', {
-                    message: `${formattedAction} succeeded for ${event.type}.`
-                });
-            } else {
-                eventBus.publish('notification:error', {
-                    message: `Unable to apply ${formattedAction} to this event.`
-                });
+            // Clear from action dropzone
+            this.clearFromActionDropzone(event);
+            
+            // Reset failed attempts for this event
+            if (this.failedAttempts[event._id]) {
+                delete this.failedAttempts[event._id];
             }
         } else {
-            eventBus.publish('notification:warning', {
-                message: `${formattedAction} is not an effective mitigation for ${event.type}.`
+            eventBus.publish('notification:error', {
+                message: `Unable to apply ${formattedAction} to this event.`
             });
         }
-    },
+    } else {
+        // Track failed attempts
+        if (!this.failedAttempts[event._id]) {
+            this.failedAttempts[event._id] = {
+                count: 1,
+                actions: [action]
+            };
+        } else {
+            // Increment failed attempts if it's a new action
+            if (!this.failedAttempts[event._id].actions.includes(action)) {
+                this.failedAttempts[event._id].count++;
+                this.failedAttempts[event._id].actions.push(action);
+            }
+        }
+        
+        // Check if reached max attempts
+        if (this.failedAttempts[event._id].count >= 3) {
+            eventBus.publish('notification:error', {
+                message: `Maximum remediation attempts reached for this event. Incident is escalating!`
+            });
+            
+            // Force escalation
+            const pendingEvent = gameModel.state.pendingMaliciousEvents.find(p => 
+                p.event._id === event._id || 
+                (p.event.timestamp === event.timestamp && 
+                 p.event.type === event.type &&
+                 p.event.ip === event.ip)
+            );
+            
+            if (pendingEvent) {
+                // Force timeout to trigger escalation
+                pendingEvent.timestamp = Date.now() - gameModel.settings.escalationTimeout - 1000;
+            }
+            
+            // Clear from action dropzone
+            this.clearFromActionDropzone(event);
+        } else {
+            eventBus.publish('notification:warning', {
+                message: `${formattedAction} is not an effective mitigation for ${event.type}. Attempts: ${this.failedAttempts[event._id].count}/3`
+            });
+        }
+    }
+},
+
+// Add a new function to clear items from action dropzone
+clearFromActionDropzone: function(event) {
+    const actionDropzone = document.getElementById('action-dropzone');
+    if (!actionDropzone) return;
+    
+    // Find all alert items in the dropzone
+    const alertItems = actionDropzone.querySelectorAll('li');
+    
+    alertItems.forEach(item => {
+        try {
+            const itemData = JSON.parse(item.dataset.event);
+            
+            // Check if this is the event we want to remove
+            if ((event._id && itemData._id === event._id) || 
+                (itemData.timestamp === event.timestamp && 
+                 itemData.type === event.type && 
+                 itemData.ip === event.ip)) {
+                // Remove it from the dropzone
+                item.remove();
+            }
+        } catch (e) {
+            console.error('Error parsing event data:', e);
+        }
+    });
+},
     
     /**
      * Get current game state
