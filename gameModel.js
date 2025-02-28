@@ -13,6 +13,7 @@ const gameModel = {
         levelProgress: 0,
         events: [],       // Store all game events
         pendingMaliciousEvents: [], // Malicious events that need handling
+        handledEvents: [], // NEW: Track which events have been handled
         trafficData: [],  // Store traffic data for visualization
     },
     
@@ -78,6 +79,7 @@ const gameModel = {
             levelProgress: 0,
             events: [],
             pendingMaliciousEvents: [],
+            handledEvents: [], // NEW: Reset handled events
             trafficData: [],
         };
         
@@ -178,6 +180,9 @@ const gameModel = {
             this.state.level = this.currentLevelIndex + 1;
             this.state.levelProgress = 0;
             
+            // NEW: Clear handled events when starting a new level
+            this.state.handledEvents = [];
+            
             this.saveGameState();
             this.applyLevelSettings();
             
@@ -211,7 +216,7 @@ const gameModel = {
         let score = 0;
         score += detectedMaliciousEvents * 100; // Points per detected event
         score += responseSpeed * 5;     // Speed bonus 
-        score += networkUptime * 10;    // Uptime points
+        score += networkUptime * 0.1;    // Small uptime points bonus (reduced from 10)
         score -= falsePositives * 50;   // False positive penalty
         
         // Ensure score is never negative
@@ -220,10 +225,12 @@ const gameModel = {
         this.state.score += earnedPoints;
         this.saveGameState();
         
-        // Publish score updated event
+        // Publish score updated event with metrics for UI
+        const handledEventsCount = this.state.handledEvents.length;
         eventBus.publish('score:updated', {
             totalScore: this.state.score,
-            earnedPoints: earnedPoints
+            earnedPoints: earnedPoints,
+            handledEvents: handledEventsCount
         });
         
         return earnedPoints;
@@ -234,6 +241,11 @@ const gameModel = {
      * @param {object} event - Game event
      */
     addEvent: function(event) {
+        // Add unique ID to event if not present
+        if (!event._id) {
+            event._id = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+        }
+        
         // Add to events array
         this.state.events.push(event);
         
@@ -268,13 +280,25 @@ const gameModel = {
      */
     markEventAsHandled: function(event) {
         const pendingEvent = this.state.pendingMaliciousEvents.find(p => 
-            p.event.timestamp === event.timestamp && 
-            p.event.type === event.type &&
-            p.event.ip === event.ip
+            (p.event._id && p.event._id === event._id) || 
+            (p.event.timestamp === event.timestamp && 
+             p.event.type === event.type &&
+             p.event.ip === event.ip)
         );
         
-        if (pendingEvent) {
+        if (pendingEvent && !pendingEvent.handled) {
             pendingEvent.handled = true;
+            
+            // NEW: Check if this event has already been handled (to prevent double scoring)
+            const eventId = event._id || `${event.timestamp}-${event.type}-${event.ip}`;
+            if (this.state.handledEvents.includes(eventId)) {
+                // Event already handled, don't award points again
+                eventBus.publish('event:handled', { event });
+                return true;
+            }
+            
+            // NEW: Add to handled events list to prevent double scoring
+            this.state.handledEvents.push(eventId);
             
             // Calculate response time in seconds (capped at 30)
             const responseTime = Math.min(30, (Date.now() - pendingEvent.timestamp) / 1000);
@@ -297,9 +321,7 @@ const gameModel = {
      */
     getDebriefStats: function() {
         const currentLevel = this.getCurrentLevel();
-        const eventsHandled = this.state.events.filter(e => 
-            e.category === "malicious" && e._handled
-        ).length;
+        const eventsHandled = this.state.handledEvents.length;
         
         const totalMalicious = this.state.events.filter(e => 
             e.category === "malicious"
